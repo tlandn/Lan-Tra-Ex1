@@ -64,7 +64,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="djengine_d.lib gles2render_d.lib djos_d.lib djopenalsound_d.lib chipmunk_d.lib tinyxml_d.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="../../lib/win32/vs2008"
+				AdditionalLibraryDirectories="$(DJ_ENGINE)\lib\win32\vs2008"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -181,6 +181,10 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			>
 			<File
+				RelativePath=".\sourcecode\mainmenu.cpp"
+				>
+			</File>
+			<File
 				RelativePath="sourcecode\player.cpp"
 				>
 			</File>
@@ -195,6 +199,10 @@
 			>
 			<File
 				RelativePath="sourcecode\constants.h"
+				>
+			</File>
+			<File
+				RelativePath=".\sourcecode\mainmenu.h"
 				>
 			</File>
 			<File

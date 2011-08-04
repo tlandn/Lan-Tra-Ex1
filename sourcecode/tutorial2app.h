@@ -20,19 +20,48 @@
 // 
 /////////////////////////////////////////////////////////////////
 
-#include <djapp.h>
-#include <dj2d.h>
-#include "constants.h"
 
 #ifndef _TUTORIAL2APP_H_
 #define _TUTORIAL2APP_H_
+
+
+#include <djapp.h>
+#include <dj2d.h>
+#include "constants.h"
+#include "djuinode.h"
 
 /////////////////////////////////////////////////////////////////
 DJ_FILE_START();
 //////
 
+enum
+{
+	MENU_MAIN,
+	MENU_SETTINGS,
+	MENU_INGAME,
+	MENU_LEVELSELECT,
+	MENU_HUD,
+
+	MENU_COUNT
+};
+enum
+{
+	GS_PRELOAD = 0,
+	GS_PRELOGO,
+	GS_LOGO_1,
+	GS_LOAD_GAME,
+	GS_MENU,
+	GS_LOAD_LEVEL,
+	GS_UNLOAD_LEVEL,
+	GS_CREDITS,
+	GS_INGAME,
+	GS_INGAME_MENU,
+	GS_MODELVIEW,
+};
+
+
 /////////////////////////////////////////////////////////////////
-class DJTutorial2Application : public DJApplication
+class DJTutorial2Application : public DJApplication, public DJUIEventListener
 {
 	IMPLEMENT_INTERFACE(Tutorial2Application, Application)
 
@@ -79,6 +108,14 @@ public:
 
 	// Handle incoming system event
 	virtual void OnMessage( djuint32 nMessage, djuint32 nParam1 = 0, djuint32 nParam2 = 0 );
+	void GotoMenu( djuint32 MENU_LEVELSELECT );
+	void PaintMenu();
+	void PaintIngame();
+	void UpdateIngame();
+	void UpdateMenu();
+
+	virtual djbool OnUIEvent( DJUINode *pNode, const DJUIEvent &ev );
+	
 };
 /////////////////////////////////////////////////////////////////
 
@@ -87,8 +124,13 @@ public:
 djuint32				g_nScreenWidth	;
 // Screen height (set in OnInit function)
 djuint32				g_nScreenHeight			= 0;
+djuint32					g_nHUDWidth			= 0;
+djuint32					g_nHUDHeight		= 0;
 // Sheet of graphics for the flare sprite
 DJ2DGraphicsSheet*		g_pFlareSheet			= NULL;
+DJUINode*	m_pMenus[MENU_COUNT];
+djint32 g_GameState = GS_MENU;
+DJViewport					g_UIViewport;
 // Sheet of graphics for the background
 DJ2DGraphicsSheet*		g_pBackgroundSheet		= NULL;
 // Utility sheet class to simplify loading sprites

@@ -1,0 +1,108 @@
+UINODE "MainMenu"
+{
+	CLASS "Tutorial2" "MainMenuPageUINode"
+	STYLE normal "page"
+	POS [0 0]
+	SIZE [-1 -1] # Will be replaced with UI view size
+	ALIGN TOP LEFT
+	ATTACH TOP LEFT
+	EVENT 	OnShow "SHOW_MENU"
+
+	UINODE "MainMenu_Text"
+	{
+		CLASS	"djengine" "TextUINode"
+		STYLE	normal "header"
+		STYLE 	disabled "header"
+		STYLE	focused "header"
+		POS		[54 50]
+		TEXT	"MAINMENU_MAINMENU"
+		ALIGN	RIGHT TOP
+		ATTACH	RIGHT TOP
+		FLAGS	AUTOEXPAND UNCLICKABLE
+	}
+	
+	UINODE "Window"
+	{
+		UINODE	"window2"
+		POS		[50 50]
+		SIZE	[360 270]
+		ALIGN	RIGHT BOTTOM
+		ATTACH	RIGHT BOTTOM
+	
+		UINODE "Button1"
+		{
+			UINODE	"menubutton"
+			POS 	[5 25]
+			TEXT	"MAINMENU_START"
+			POS		[0 0]
+			ALIGN	RIGHT TOP
+			ATTACH	RIGHT TOP
+			EVENT 	OnClicked "START"
+		}
+
+		UINODE "Button2"
+		{
+			UINODE	"menubutton"
+			POS 	[0 25]
+			TEXT	"MAINMENU_SETTINGS"
+			ALIGN 	RIGHT TOP
+			ATTACH_NODE "Button1"	RIGHT BOTTOM
+			EVENT 	OnClicked "SETTINGS"
+		}
+
+		UINODE "Button3"
+		{
+			UINODE	"menubutton"
+			POS 	[0 25]
+			TEXT	"MAINMENU_ACHIEVEMENTS"
+			ALIGN 	RIGHT TOP
+			ATTACH_NODE "Button2"	RIGHT BOTTOM
+			EVENT 	OnClicked "ACHIEVEMENTS"
+			FLAGS	DISABLED
+		}
+
+		UINODE "Button4"
+		{
+			UINODE	"menubutton"
+			POS 	[0 25]
+			TEXT	"MAINMENU_LEADERBOARDS"
+			ALIGN 	RIGHT TOP
+			ATTACH_NODE "Button3"	RIGHT BOTTOM
+			EVENT 	OnClicked "LEADERBOARDS"
+			FLAGS	DISABLED
+		}
+
+		UINODE "Button5"
+		{
+			UINODE	"menubutton"
+			POS 	[0 25]
+			TEXT	"MAINMENU_CREDITS"
+			ALIGN 	RIGHT TOP
+			ATTACH_NODE "Button4"	RIGHT BOTTOM
+			EVENT 	OnClicked "CREDITS"
+		}
+
+#		UINODE "Button6"
+#		{
+#			UINODE	"menubutton"
+#			POS 	[0 25]
+#			TEXT	"MAINMENU_QUIT"
+#			ALIGN 	RIGHT TOP
+#			ATTACH_NODE 	"Button5" RIGHT BOTTOM
+#			EVENT 	OnClicked "QUIT"
+#			PLATFORM_EXCLUDE	iOS
+#		}
+
+#		UINODE "marker"
+#		{
+#			CLASS	"djengine" "UINode"
+#			POS		[54 50]
+#			ALIGN 	RIGHT BOTTOM
+#			ATTACH 	RIGHT BOTTOM
+#			FLAGS	UNCLICKABLE
+#		}
+	}
+}
+
+
+

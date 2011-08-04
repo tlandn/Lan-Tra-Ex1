@@ -34,6 +34,8 @@
 #include "tutorial2app.h"
 #include "constants.h"
 #include "player.h"
+#include "djuinode.h"
+#include "mainmenu.h"
 
 /////////////////////////////////////////////////////////////////
 // Name of the game module
@@ -77,18 +79,21 @@ void DJSystem_AddStaticModules()
 /////////////////////////////////////////////////////////////////
 BEGIN_ENUMERATE_INTERFACE()
 ENUMERATE_INTERFACE(Tutorial2Application)
+ENUMERATE_INTERFACE(MainMenuPageUINode)
 END_ENUMERATE_INTERFACE()
 /////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////
 BEGIN_CREATE_INTERFACE()
 CREATE_INTERFACE(Tutorial2Application)
+CREATE_INTERFACE(MainMenuPageUINode)
 END_CREATE_INTERFACE()
 /////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////
 BEGIN_REGISTER_SYMBOL(Tutorial2)
 REGISTER_INTERFACE(Tutorial2Application)
+REGISTER_INTERFACE(MainMenuPageUINode)
 /////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////
@@ -106,6 +111,7 @@ END_REGISTER_SYMBOL()
 // Linked list of players
 DJLinkedList<Player> g_players;
 Player* g_PlayerBeingClicked = NULL;
+
 
 void CreateNewPlayer();
 
@@ -138,6 +144,27 @@ djresult DJTutorial2Application::OnInit()
 
 	// Get size of screen and put in global variables
 	pTheRenderDevice->GetScreenSize(g_nScreenWidth, g_nScreenHeight);
+
+	if (g_nScreenWidth < 800)
+	{
+		g_UIViewport.SetViewport(0,0,800,(djint32)(400.0f*((float)(g_nScreenHeight)/(float)(g_nScreenWidth))/(480.0f/854.0f)));
+		g_nHUDWidth = 800;
+		g_nHUDHeight = 800*g_nScreenHeight/g_nScreenWidth;
+	}
+	else
+	{
+		g_UIViewport.SetViewport(0,0,854,(djint32)(480.0f*((float)(g_nScreenHeight)/(float)(g_nScreenWidth))/(480.0f/854.0f)));
+		g_nHUDWidth = g_nScreenWidth;
+		g_nHUDHeight = g_nScreenHeight;
+	}
+
+	// Create UI system
+	pTheUI = DJ_NEW(DJUI);
+	pTheUI->Init();
+	pTheUI->SetUIWidth(g_UIViewport.GetWidth());
+	pTheUI->SetUIHeight(g_UIViewport.GetHeight());
+	pTheUI->RegisterEventListener(this);
+
 
 	// Randomize random seed by using system time
 	djRandomSetSeed( (djuint32)(djGetSystemTimeFloat() * 65536.0f) );
@@ -234,6 +261,15 @@ djresult DJTutorial2Application::OnInit()
 		return DJ_FAILURE;
 	}
 
+	// Load menus
+	m_pMenus[MENU_MAIN] = (DJUINode*)theResourceManager.GetResource("mainmenu", DJResource::TYPE_UINODE);
+	if (m_pMenus[MENU_MAIN])
+	{
+		m_pMenus[MENU_MAIN]->ShowNode(DJFALSE);
+		pTheUI->GetRootNode()->GetChildList().AddLast(m_pMenus[MENU_MAIN]);
+		m_pMenus[MENU_MAIN]->AddToParent(pTheUI->GetRootNode());
+	}
+
 	return DJ_SUCCESS;
 }
 
@@ -259,10 +295,15 @@ void DJTutorial2Application::OnTerm()
 
 ///
 
-void DJTutorial2Application::OnUpdate()
-{
-	//DJTrace(__FUNCTION__"()");
 
+
+void DJTutorial2Application::PaintIngame()
+{
+
+}
+
+void DJTutorial2Application::UpdateIngame() 
+{
 	// Update player
 	DJLinkedListIter<Player> iter(g_players);
 	Player * pPlayer;
@@ -281,13 +322,6 @@ void DJTutorial2Application::OnUpdate()
 		//Create new player
 		CreateNewPlayer();
 	}
-}
-
-///
-
-void DJTutorial2Application::OnPaint()
-{
-	//DJTrace(__FUNCTION__"()");
 
 	// Set the clear color
 	pTheRenderDevice->SetClearColor(DJColor(1,0,0,0));
@@ -298,7 +332,7 @@ void DJTutorial2Application::OnPaint()
 
 	// Set render context
 	DJ2DRenderContext rc;
-	rc.m_dwFlags = 0;
+	//rc.m_dwFlags = 0;
 	rc.m_cModColor = DJColor(1,1,1,1);
 	rc.m_cAddColor = DJColor(0,0,0,0);
 	rc.m_mLayerTransform = DJMatrix2D::Identity();
@@ -314,6 +348,37 @@ void DJTutorial2Application::OnPaint()
 	char buffer[100];
 	djStringFormat(buffer, 100,  "Scores : %d", g_scores);
 	g_pFont->DrawString(buffer , DJVector3(10,10,0), DJVector2(16,16), 0xFFFFFFFF);
+}
+
+void DJTutorial2Application::OnUpdate()
+{
+	//DJTrace(__FUNCTION__"()");
+
+	switch (g_GameState)
+	{
+	case GS_MENU:
+		UpdateMenu();
+		break;
+	case GS_INGAME:
+		UpdateIngame();
+		break;
+	}
+}
+
+///
+
+void DJTutorial2Application::OnPaint()
+{
+	//DJTrace(__FUNCTION__"()");
+	switch (g_GameState)
+	{
+	case GS_MENU:
+		PaintMenu();
+		break;
+	case GS_INGAME:
+		PaintIngame();
+		break;
+	}
 }
 
 void CreateNewPlayer() 
@@ -468,6 +533,57 @@ void DJTutorial2Application::OnMessage(djuint32 nMessage, djuint32 nParam1, djui
 {
 	//DJTrace(__FUNCTION__"()");
 }
+
+void DJTutorial2Application::GotoMenu(djuint32 MENU_LEVELSELECT)
+{
+	
+}
+
+
+void DJTutorial2Application::UpdateMenu() 
+{
+}
+
+void DJTutorial2Application::PaintMenu()
+{
+	pTheRenderDevice->SetViewTransform(DJMatrix::Translate(DJVector3(0, 0, 0)));
+	pTheRenderDevice->SetPerspectiveOrtho(0,0,854,480,0.0f,100.0f);
+
+	//PaintMenuBackground(DJTRUE);
+
+	pTheRenderDevice->SetViewTransform(DJMatrix::Translate(DJVector3(0, 0, 0)));
+	pTheRenderDevice->SetPerspectiveOrtho(0,0,854,480,0.0f,100.0f);
+	//pTheRenderDevice->SetViewport(DJViewport(0,0,854,480));
+
+	DJ2DRenderContext rc;
+	rc.m_uFlags = 0;
+	rc.m_cModColor = DJColor(1,1,1,1); 
+	rc.m_cAddColor = DJColor(0,0,0,0);
+	rc.m_mLayerTransform = DJMatrix2D::Identity();
+	rc.m_pLayer = NULL;
+	rc.m_mTransform = DJMatrix2D::Identity();
+
+	// Render UI
+	pTheRenderDevice->SetViewTransform(DJMatrix::Translate(DJVector3(0, 0, 0)));
+	pTheRenderDevice->SetPerspectiveOrtho(0,0,(float)g_UIViewport.GetWidth(),(float)g_UIViewport.GetHeight(),0.0f,100.0f);
+	rc.m_pViewport = &g_UIViewport;
+	pTheUI->OnPaint(rc);
+	rc.m_pViewport = NULL;
+}
+
+djbool DJTutorial2Application::OnUIEvent( DJUINode *pNode, const DJUIEvent &ev )
+{
+	if (ev.m_uEventID == pTheUI->EVENTID_ON_CLICKED)
+	{
+		if (ev.m_uStateID == pTheUI->GetStateID("QUIT"))
+		{
+			m_bQuit = DJTRUE;
+			return DJTRUE;
+		}
+	}
+	return DJFALSE;
+}
+
 // Application class
 /////////////////////////////////////////////////////////////////
 
