@@ -1,0 +1,16 @@
+ANIMATIONS
+{
+	SHEETS
+	{
+		PLAYERSHEET "sprites/characters.sheet"
+	}
+	
+	ANIMATION "lizardman_e"
+	{
+		LOOPING 		1
+		FRAMERATE 		8
+		SHEET PLAYERSHEET
+		FRAME lizardman 6 1
+		FRAME lizardman 7 1
+	}
+}

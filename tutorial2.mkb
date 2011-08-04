@@ -1,0 +1,89 @@
+#!/usr/bin/env mkb
+options
+{
+#	strict
+	module_path="$DJ_ENGINE/build"
+#	app-icf="app.icf"
+	s3e-data-dir="." 
+	builddir=out/airplay
+}
+
+defines
+{
+	_AIRPLAY
+}
+
+debug_define _DEBUG
+
+if {{ not defined _DEBUG }} 
+defines 
+{
+	NDEBUG
+	FINAL_VER
+}
+
+subprojects 
+{
+	iwgl
+	djos
+	djengine
+	gles2render
+	djairsound
+	../externals/chipmunk-physics/chipmunk
+	../externals/airplay/tinyxml/tinyxml
+	../externals/mikmod/mikmod/src/mikmod
+	derbh
+#	../externals/enet-1.3.1/enet
+}
+
+#library "../../build,djos"
+#library "../../build,djengine"
+#library "../../build,gles2render"
+#library "../../build,djairsound"
+#library "../../externals/chipmunk-physics,chipmunk"
+#library "../../externals/airplay/tinyxml,tinyxml"
+#library "../../externals/enet-1.3.1,enet"
+
+includepaths
+{
+	"$DJ_ENGINE/include"
+	"$DJ_ENGINE/include/osal"
+	"$DJ_ENGINE/externals/chipmunk-physics/include/chipmunk"
+	"$DJ_ENGINE/externals/tinyxml"
+#	"$DJ_ENGINE/externals/mikmod/mikmod/include"
+#	"$DJ_ENGINE/externals/enet-1.3.1/include"
+}
+
+files
+{
+	[Source]
+	(sourcecode)
+	tutorial2app.cpp
+	effects.cpp
+	entity.cpp
+	seekerentity.cpp
+	asteroidentity.cpp
+	playerentity.cpp
+	input.cpp
+	historyhandler.cpp
+	level.cpp
+	entityhandler.cpp
+
+	[Headers]
+	(sourcecode)
+	tutorial2app.h
+	effects.h
+	entity.h
+	seekerentity.h
+	asteroidentity.h
+	playerentity.h
+	input.h
+	historyhandler.h
+	level.h
+	entityhandler.h
+}
+
+assets
+{
+	"data"
+}

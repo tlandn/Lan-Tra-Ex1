@@ -1,0 +1,16 @@
+ANIMATIONS
+{
+	SHEETS
+	{
+		PLAYERSHEET "sprites/characters.sheet"
+	}
+	
+	ANIMATION "ranger_n"
+	{
+		LOOPING 		1
+		FRAMERATE 		8
+		SHEET PLAYERSHEET
+		FRAME ranger 2 1
+		FRAME ranger 3 1
+	}
+}
